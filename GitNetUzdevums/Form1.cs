@@ -17,65 +17,63 @@ namespace WindowsFormsApplication_15
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        // Šī metode tiek izsaukta, kad forma ielādējas
+        private void Form1_Load(object sender, EventArgs e)
         {
-            double m = 30; //mērogs
-            int xc = pictureBox1.Width / 2;   // centra koordinātes
-            int yc = pictureBox1.Height / 2;
-            int xe, ye;     // punktu "ekrāna" koordinātes
-            double x, y;   // punktu "matemātiskās" koordinātes
-            double step = 0.005;    // solis
+            // Šeit vari ievietot kodu, kas jāizpilda formu ielādējot, ja nepieciešams
+            // Piemēram: MessageBox.Show("Forma ielādēta!");
+        }
+
+        // Kopīga funkcija grafika zīmēšanai
+        private void ZimetGrafiku(Func<double, double> funkcija, Color krasas)
+        {
+            double merogs = 30; // mērogs pikseļos
+            int xc = pictureBox1.Width / 2; // x ass centrs
+            int yc = pictureBox1.Height / 2; // y ass centrs
+            int xe, ye;
+            double x, y;
+            double solis = 0.005;
+
             Graphics G = pictureBox1.CreateGraphics();
-            G.Clear(System.Drawing.Color.White);
-            Pen myPen = new Pen(Color.Silver);
-            G.DrawLine(myPen, 10, yc, 2 * xc - 10, yc);   // asis
-            G.DrawLine(myPen, xc, 10, xc, 2 * yc - 10);
-            myPen = new Pen(Color.Black);
+            G.Clear(Color.White); // notīra iepriekšējo grafiku
+
+            // Asu zīmēšana
+            Pen asis = new Pen(Color.Silver);
+            G.DrawLine(asis, 10, yc, 2 * xc - 10, yc); // x ass
+            G.DrawLine(asis, xc, 10, xc, 2 * yc - 10); // y ass
+
+            // Funkcijas zīmēšana
+            Pen pildspalva = new Pen(krasas);
             x = -Math.PI;
-            // funkcijas grafika konstruēšanas cikls
+
             while (x < Math.PI)
             {
-                try   // ja funkcija kādā punktā neeksistē 
+                try
                 {
-                    y = 1/Math.Sin(x);   // Funkcijas formula!!!
-                    xe = (int)(xc + m * x);
-                    ye = (int)(yc - m * y);
-                    G.DrawEllipse(myPen, xe, ye, 1, 1);
+                    y = funkcija(x);
+                    xe = (int)(xc + merogs * x);
+                    ye = (int)(yc - merogs * y);
+                    G.DrawEllipse(pildspalva, xe, ye, 1, 1);
                 }
-                catch { }
-                x += step;
+                catch
+                {
+                    // Ja funkcija šajā punktā nav definēta (piem., 1/sin(x) pie x=0), ignorē
+                }
+
+                x += solis;
             }
         }
 
+        // 1. poga — zīmē y = 1 / sin(x)
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ZimetGrafiku(x => 1 / Math.Sin(x), Color.Black);
+        }
 
+        // 2. poga — zīmē y = sin(x) + cos(x)
         private void button2_Click(object sender, EventArgs e)
         {
-            double m = 30; //mērogs
-            int xc = pictureBox1.Width / 2;   // centra koordinātes
-            int yc = pictureBox1.Height / 2;
-            int xe, ye;     // punktu "ekrāna" koordinātes
-            double x, y;   // punktu "matemātiskās" koordinātes
-            double step = 0.005;    // solis
-            Graphics G = pictureBox1.CreateGraphics();
-            G.Clear(System.Drawing.Color.White);
-            Pen myPen = new Pen(Color.Silver);
-            G.DrawLine(myPen, 10, yc, 2 * xc - 10, yc);   // asis
-            G.DrawLine(myPen, xc, 10, xc, 2 * yc - 10);
-            myPen = new Pen(Color.Black);
-            x = -Math.PI;
-            // funkcijas grafika konstruēšanas cikls
-            while (x < Math.PI)
-            {
-                try   // ja funkcija kādā punktā neeksistē 
-                {
-                    y = x * x; // Funkcijas formula!!!
-                    xe = (int)(xc + m * x);
-                    ye = (int)(yc - m * y);
-                    G.DrawEllipse(myPen, xe, ye, 1, 1);
-                }
-                catch { }
-                x += step;
-            }
+            ZimetGrafiku(x => Math.Sin(x) + Math.Cos(x), Color.Blue);
         }
     }
 }
