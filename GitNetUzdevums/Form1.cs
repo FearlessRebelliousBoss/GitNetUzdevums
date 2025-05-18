@@ -17,32 +17,41 @@ namespace WindowsFormsApplication_15
             InitializeComponent();
         }
 
-        // Šī metode tiek izsaukta, kad forma ielādējas
-        private void Form1_Load(object sender, EventArgs e)
+        // Poga 1 — y = 1 / sin(x)
+        private void button1_Click(object sender, EventArgs e)
         {
-            // Šeit vari ievietot kodu, kas jāizpilda formu ielādējot, ja nepieciešams
-            // Piemēram: MessageBox.Show("Forma ielādēta!");
+            ZimetGrafiku(x => 1 / Math.Sin(x), Color.Black);
         }
 
-        // Kopīga funkcija grafika zīmēšanai
+        // Poga 2 — y = x * x
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ZimetGrafiku(x => x * x, Color.Blue);
+        }
+
+        // Poga 3 — y = x (taisne)
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ZimetGrafiku(x => x, Color.Red);
+        }
+
+        // Kopīga grafika zīmēšanas funkcija
         private void ZimetGrafiku(Func<double, double> funkcija, Color krasas)
         {
-            double merogs = 30; // mērogs pikseļos
-            int xc = pictureBox1.Width / 2; // x ass centrs
-            int yc = pictureBox1.Height / 2; // y ass centrs
+            double m = 30;
+            int xc = pictureBox1.Width / 2;
+            int yc = pictureBox1.Height / 2;
             int xe, ye;
             double x, y;
-            double solis = 0.005;
+            double step = 0.005;
 
             Graphics G = pictureBox1.CreateGraphics();
-            G.Clear(Color.White); // notīra iepriekšējo grafiku
+            G.Clear(Color.White);
 
-            // Asu zīmēšana
             Pen asis = new Pen(Color.Silver);
             G.DrawLine(asis, 10, yc, 2 * xc - 10, yc); // x ass
             G.DrawLine(asis, xc, 10, xc, 2 * yc - 10); // y ass
 
-            // Funkcijas zīmēšana
             Pen pildspalva = new Pen(krasas);
             x = -Math.PI;
 
@@ -51,29 +60,13 @@ namespace WindowsFormsApplication_15
                 try
                 {
                     y = funkcija(x);
-                    xe = (int)(xc + merogs * x);
-                    ye = (int)(yc - merogs * y);
+                    xe = (int)(xc + m * x);
+                    ye = (int)(yc - m * y);
                     G.DrawEllipse(pildspalva, xe, ye, 1, 1);
                 }
-                catch
-                {
-                    // Ja funkcija šajā punktā nav definēta (piem., 1/sin(x) pie x=0), ignorē
-                }
-
-                x += solis;
+                catch { }
+                x += step;
             }
-        }
-
-        // 1. poga — zīmē y = 1 / sin(x)
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ZimetGrafiku(x => 1 / Math.Sin(x), Color.Black);
-        }
-
-        // 2. poga — zīmē y = sin(x) + cos(x)
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ZimetGrafiku(x => Math.Sin(x) + Math.Cos(x), Color.Blue);
         }
     }
 }
